@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 5001;
 
 const allowedOrigins = [
   'http://localhost:3000', 
-  'https://resume-analyzer-pied.vercel.app/' 
+  'https://resume-analyzer-pied.vercel.app' 
 ];
 
 app.use(cors({
