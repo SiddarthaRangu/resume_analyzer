@@ -4,11 +4,10 @@ const router = express.Router();
 const multer = require('multer');
 const resumeController = require('../controllers/resumeController');
 
-// Configure multer for in-memory file storage
 const storage = multer.memoryStorage();
 const upload = multer({ 
     storage: storage,
-    limits: { fileSize: 10 * 1024 * 1024 } // 10 MB file size limit
+    limits: { fileSize: 10 * 1024 * 1024 } 
 });
 
 router.post('/upload', upload.single('resume'), resumeController.uploadResume);

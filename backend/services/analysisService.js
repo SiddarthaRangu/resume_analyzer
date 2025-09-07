@@ -1,17 +1,12 @@
-// backend/services/analysisService.js
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const pdf = require('pdf-parse');
 require('dotenv').config();
 
-// Initialize the Gemini client
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
 
-// Use the correct FUNCTION NAME and the updated MODEL NAME
 const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash-latest' });
 
 
-// ... the rest of the file remains the same ...
-// Function to extract text from a PDF buffer
 const extractTextFromPdf = async (pdfBuffer) => {
   try {
     const data = await pdf(pdfBuffer);
@@ -22,11 +17,7 @@ const extractTextFromPdf = async (pdfBuffer) => {
   }
 };
 
-// Function to get analysis from Gemini
-// In backend/services/analysisService.js
-
 const getAnalysisFromGemini = async (resumeText) => {
-  // NEW, UPGRADED PROMPT
   const prompt = `
     You are "Klarity", an elite AI career coach and expert technical recruiter. Your persona is encouraging, sharp, and highly insightful. You are analyzing a resume for a client who trusts you to give them a real competitive edge.
 
@@ -75,14 +66,12 @@ const getAnalysisFromGemini = async (resumeText) => {
     }
   `;
 
-  // ... rest of the function remains the same
 
   try {
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const text = response.text();
 
-    // Clean the response to ensure it's valid JSON
     const jsonResponse = JSON.parse(text.replace(/```json/g, '').replace(/```/g, '').trim());
     return jsonResponse;
   } catch (error) {

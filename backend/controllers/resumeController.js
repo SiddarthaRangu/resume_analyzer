@@ -1,8 +1,6 @@
-// backend/controllers/resumeController.js
 const db = require('../db');
 const { extractTextFromPdf, getAnalysisFromGemini } = require('../services/analysisService');
-
-console.log("✅ Loading the LATEST version of resumeController.js!"); // <-- ADD THIS LINE
+ 
 
 const uploadResume = async (req, res) => {
   if (!req.file) {
@@ -10,21 +8,17 @@ const uploadResume = async (req, res) => {
   }
 
   try {
-    // 1. Extract text from PDF
     const resumeText = await extractTextFromPdf(req.file.buffer);
 
-    // 2. Get the new, detailed analysis from Gemini
     const analysisData = await getAnalysisFromGemini(resumeText);
 
-    // 3. Destructure the NEW analysis data object
     const {
       name, email, phone, linkedin_url, portfolio_url, summary,
       work_experience, education, technical_skills, soft_skills,
-      projects, certifications, analysis, // <-- This is the new object
+      projects, certifications, analysis, 
       upskilling_suggestions,
     } = analysisData;
 
-    // 4. Prepare the query for the NEW database structure
     const query = `
       INSERT INTO resumes (
         file_name, name, email, phone, linkedin_url, portfolio_url, summary,
@@ -34,7 +28,6 @@ const uploadResume = async (req, res) => {
       RETURNING *;
     `;
     
-    // 5. Prepare the values, ensuring we stringify the JSONB fields
     const values = [
       req.file.originalname, name, email, phone, linkedin_url, portfolio_url, summary,
       JSON.stringify(work_experience || []),
@@ -43,17 +36,15 @@ const uploadResume = async (req, res) => {
       JSON.stringify(soft_skills || []),
       JSON.stringify(projects || []),
       JSON.stringify(certifications || []),
-      JSON.stringify(analysis || {}), // <-- Correctly stringify the new analysis object
-      JSON.stringify(upskilling_suggestions || []) // <-- Correctly stringify suggestions
+      JSON.stringify(analysis || {}),
+      JSON.stringify(upskilling_suggestions || [])
     ];
     
     const { rows } = await db.query(query, values);
     
-    // 6. Return the full, newly created record
     res.status(201).json(rows[0]);
 
   } catch (error) {
-    // This is where your error is being caught and logged
     console.error('Error in uploadResume controller:', error);
     res.status(500).json({ error: 'An internal server error occurred.' });
   }
