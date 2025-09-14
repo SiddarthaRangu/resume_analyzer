@@ -1,9 +1,10 @@
-﻿# resume_analyzer
+# DeepKlarity - AI Resume Analyzer
 
+![AI Analysis Results](./screenshots/Analysis_page1.png)
 
-This is a full-stack web application designed to help users improve their resumes. It leverages the power of Google's Gemini LLM to automatically extract key information from an uploaded PDF resume, provide a detailed, actionable analysis, and offer personalized feedback for enhancement.
+DeepKlarity is a full-stack web application designed to help users improve their resumes. It leverages the power of Google's Gemini LLM to automatically extract key information from an uploaded PDF resume, provide a detailed, actionable analysis, and offer personalized feedback for enhancement.
 
-**[https://vercel.com/siddartharangus-projects/resume-analyzer]**
+**Live Application Link:** **[https://resume-analyzer-neat3cx9j-siddartharangus-projects.vercel.app/](https://resume-analyzer-neat3cx9j-siddartharangus-projects.vercel.app/)**
 
 ---
 
@@ -17,30 +18,25 @@ This is a full-stack web application designed to help users improve their resume
 
 ## Screenshots
 
-### Main Analysis Flow
-![Resume Upload and Analysis](./screenshots/upload_page.png)
-_The clean, intuitive interface for uploading a new resume._
+| Upload Page | Analysis Results |
+| :---: | :---: |
+| ![Resume Upload and Analysis](./screenshots/upload_page.png) | ![Full Analysis Results](./screenshots/Analysis_page1.png) |
 
-![Full Analysis Results](./screenshots/Analysis_page1.png)
-_The complete AI-generated report, including the final verdict, section-by-section feedback, and upskilling suggestions._
+| History Viewer | Modal Details |
+| :---: | :---: |
+| ![Resume History Table](./screenshots/history_page.png) | ![Analysis Details in Modal](./screenshots/Modal_view_page.png) |
 
-### Historical Viewer
-![Resume History Table](./screenshots/history_page.png)
-_A clear, sortable table displaying all previously analyzed resumes._
-
-![Analysis Details in Modal](./screenshots/Modal_view_page.png)
-_Clicking "View Details" opens a modal with the complete analysis, reusing the main report component for a consistent UX._
 
 ## Technology Stack
 
 -   **Frontend:** React.js, Tailwind CSS, Axios
--   **Backend:** Node.js, Express.js
+-   **Backend:** Python, FastAPI, SQLAlchemy
 -   **Database:** PostgreSQL (Cloud-hosted on NeonDB)
--   **AI / LLM:** Google Gemini API via `@google/generative-ai`
--   **PDF Parsing:** `pdf-parse`
+-   **AI / LLM:** Google Gemini API via `google-generativeai`
+-   **PDF Parsing:** `pdfplumber`
 -   **Deployment:**
     -   Backend deployed on **Render**.
-    -   Frontend deployed on **Vercel / Netlify**.
+    -   Frontend deployed on **Vercel**.
 
 ## How to Set Up and Run Locally
 
@@ -49,11 +45,12 @@ To get a local copy up and running, follow these simple steps.
 ### Prerequisites
 
 You will need the following tools installed on your machine:
+-   [Python](https://www.python.org/) (v3.8 or later)
 -   [Node.js](https://nodejs.org/) (v18 or later is recommended)
 -   [npm](https://www.npmjs.com/) (comes with Node.js)
 -   [Git](https://git-scm.com/)
 
-You will also need to sign up for a couple of free services:
+You will also need to sign up for these free services:
 -   A [NeonDB](https://neon.tech/) account for the PostgreSQL database.
 -   A [Google AI Studio](https://aistudio.google.com/app/apikey) account to get a Gemini API Key.
 
@@ -61,30 +58,41 @@ You will also need to sign up for a couple of free services:
 
 1.  **Clone the Repository**
     ```sh
-    git clone https://github.com/YOUR_GITHUB_USERNAME/resume-analyzer-app.git
-    cd resume-analyzer-app
+    git clone https://github.com/SiddarthaRangu/resume_analyzer.git
+    cd resume_analyzer
     ```
 
-2.  **Setup the Backend**
+2.  **Setup the Backend (Python)**
     -   Navigate to the backend directory:
         ```sh
         cd backend
         ```
-    -   Install the required npm packages:
+    -   Create and activate a Python virtual environment:
         ```sh
-        npm install
+        # For macOS/Linux
+        python3 -m venv venv
+        source venv/bin/activate
+
+        # For Windows
+        python -m venv venv
+        .\venv\Scripts\activate
         ```
-    -   Create a `.env` file in the `/backend` directory. This file will store your secret keys.
+    -   Install the required packages:
+        ```sh
+        pip install -r requirements.txt
+        ```
+    -   Create a `.env` file in the `/backend` directory to store your secret keys:
         ```sh
         touch .env
         ```
     -   Add your credentials to the `backend/.env` file. Use the **Direct Connection** string from NeonDB.
         ```env
-        DATABASE_URL="YOUR_NEON_DB_CONNECTION_STRING"
+        # The URL must start with postgresql:// for SQLAlchemy
+        DATABASE_URL="postgresql://YOUR_NEON_USER:PASSWORD@HOST/DB_NAME"
         GOOGLE_API_KEY="YOUR_GEMINI_API_KEY"
         ```
 
-3.  **Setup the Frontend**
+3.  **Setup the Frontend (React)**
     -   Navigate to the frontend directory from the root project folder:
         ```sh
         cd ../frontend
@@ -99,16 +107,17 @@ You will also need to sign up for a couple of free services:
 The application requires both the backend and frontend servers to be running simultaneously.
 
 1.  **Start the Backend Server:**
-    Open a terminal, navigate to the `/backend` directory, and run:
-    ```sh
-    node server.js
-    ```
-    The server will start and be listening on `http://localhost:5001`.
+    -   Open a terminal, ensure you are in the `/backend` directory and your virtual environment is activated.
+    -   Run the Uvicorn server:
+        ```sh
+        uvicorn app.main:app --reload
+        ```
+    -   The server will start and be listening on `http://localhost:8000`.
 
 2.  **Start the Frontend Development Server:**
-    Open a **second, separate** terminal, navigate to the `/frontend` directory, and run:
-    ```sh
-    npm start
-    ```
-    This will launch the React application, which should automatically open in your web browser at `http://localhost:3000`. You can now use the app!
-
+    -   Open a **second, separate** terminal and navigate to the `/frontend` directory.
+    -   Run the React start script:
+        ```sh
+        npm start
+        ```
+    -   This will launch the React application, which should automatically open in your web browser at `http://localhost:3000`. You can now use the app!
