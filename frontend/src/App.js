@@ -5,7 +5,7 @@ import PastResumesTable from './components/PastResumesTable';
 import ResumeDetails from './components/ResumeDetails';
 import Modal from './components/Modal';
 
-axios.defaults.baseURL = process.env.REACT_APP_API_URL || 'http://localhost:5001';
+axios.defaults.baseURL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
 function App() {
   const [activeTab, setActiveTab] = useState('analysis');
